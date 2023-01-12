@@ -1,0 +1,10 @@
+void setup() {
+  // Sets pin 13 as OUTPUT
+  pinMode(13, OUTPUT);
+}
+void loop() {
+  /* Sets the pin 13 HIGH
+    means +5 V
+  */
+  digitalWrite(13, HIGH);
+}
