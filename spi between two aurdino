@@ -1,0 +1,55 @@
+#include <SPI.h>
+
+const int peripheralPin = 10; // chip select
+
+void setup() {
+  // put your setup code here, to run once:
+  SPI.begin();
+  pinMode(peripheralPin, OUTPUT); // CS as o/p
+  Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  digitalWrite(peripheralPin, LOW); // select the peripheral
+  delay(100);
+  char data = SPI.transfer(71);
+  delay(1000);
+  digitalWrite(peripheralPin, HIGH); // deselect the peripheral
+  Serial.println(data);
+}
+
+
+/@@@@@@@@@@@@@@@@@###################$$$$$$$$$$$$$$$$%%%%%%%%%%%%%%%%%
+
+#include <SPI.h>
+
+bool flag = 0;
+byte p_recv;
+
+void setup() 
+  // put your setup code here, to run once:
+{
+  Serial.begin(9600);
+  pinMode(MISO, OUTPUT);
+
+  SPCR = (1 << SPE) | (1 << SPIE);
+  sei();
+}
+
+ISR (SPI_STC_vect)
+{
+  p_recv = SPDR;
+  flag = 1; 
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  Serial.println((char(p_recv)));
+  delay(500);
+  if(flag)
+  {
+    SPDR = 'D';
+  }
+
+}
