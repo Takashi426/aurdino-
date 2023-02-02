@@ -2,6 +2,85 @@
 //LINK OF GOOGLE IS HERE
 //https://maker.pro/arduino/tutorial/creating-long-distance-serial-communication-using-an-arduino-and-an-rs-485-module
 
+
+
+
+#define SerialTxControl_1 9// contact #  will switch receiver / transmitter mode
+#define RS485Transmit HIGH //to undestand high
+#define RS485Receive LOW // to undestand low
+#define LED          13  //led pin number
+//#########receiver
+
+#define SerialTxControl_2 8// just enable pin
+
+char buffer [100];
+byte state = 0;
+
+void setup (void) 
+{
+    Serial.begin (9600);//for serial port
+    Serial1.begin (9600);//for seria; port 1
+    Serial2.begin (9600); // for serial port 2
+    pinMode(LED , OUTPUT); 
+    pinMode (9,OUTPUT); // declare enable pin as output//seeting pin numbers as output
+    pinMode (8,OUTPUT); // declare enable pin as output// DE,RE =HIGH //put the device into transmitter mode
+     
+    //receiver
+    //#######
+     
+    //pinMode (14, OUTPUT); 
+    digitalWrite (8, RS485Receive); 
+    digitalWrite (9, RS485Receive); //RECEVING CONDIYION IS DE,RE=LOW// put the device into receiver mode
+    
+
+}
+ 
+void loop (void) {
+  digitalWrite (9, RS485Transmit); //to send data de,re==high
+    delay(500); 
+    Serial1.write ("cat");// send text
+    //###########
+    //receiver
+    while(Serial2.available())                     // data is available so enter into while loop
+  {
+    if(Serial2.read() == "cat");                    //check avalaible data with cat
+    {
+      Serial.println("cat_ok");
+      digitalWrite(LED , !digitalRead(LED));    // LED Blink
+    }
+  }
+}
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////not completed code here is///////////////
+
+
+
+
+
+
+
+/*
 #define SerialTxControl 15 // contact #  will switch receiver / transmitter mode
 #define RS485Transmit HIGH
 #define RS485Receive LOW
@@ -65,3 +144,4 @@ void loop (void) {
         }
        //Serial.print ("receiving and transmitting is done with two rs485 and one aurdino"); 
     }
+*/
