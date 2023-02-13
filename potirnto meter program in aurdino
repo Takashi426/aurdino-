@@ -1,0 +1,19 @@
+const int pot1Pin = A0;   // potentiometer 1 connected to analog pin A0
+const int pot2Pin = A1;   // potentiometer 2 connected to analog pin A1
+
+void setup() {
+  Serial.begin(9600);   // initialize serial communication
+}
+
+void loop() {
+  int pot1Value = analogRead(pot1Pin);   // read value of potentiometer 1
+  //int pot2Value = analogRead(pot2Pin);   // read value of potentiometer 2
+
+  Serial.print("Potentiometer 1 value: ");
+  Serial.println(pot1Value);
+
+ // Serial.print("Potentiometer 2 value: ");
+  //Serial.println(pot2Value);
+
+  delay(100);   // wait for 100 milliseconds
+}
