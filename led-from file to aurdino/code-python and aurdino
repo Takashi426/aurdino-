@@ -1,0 +1,42 @@
+
+void setup() {
+  Serial.begin(9600); // Start serial communication at 9600 baud rate
+  Serial.begin(9600);
+   pinMode(13, OUTPUT);
+}
+
+void loop() {
+   
+  if (Serial.available() > 0) { // Check if there is data available
+String data = Serial.readStringUntil('\n');
+    //String data = Serial.readString(); // Read the incoming data as a string
+    Serial.print("Received: "); // Print a label
+    Serial.println(data); // Print the incoming data
+    if(data=="on")
+    {
+      digitalWrite(13, HIGH);
+       delay(1000);
+    digitalWrite(13, LOW);
+     //Serial.write("Led on");
+     Serial.println(data);
+     Serial3.println(data);
+    }
+  }
+}
+
+
+////python script
+
+import serial
+import time
+ 
+ser= serial.Serial("COM5", 9600)
+ser.timeout = 1
+file = open("arduinodata.txt")
+Read = file.readline()
+while 1:
+    
+ ser.write(Read.encode())
+ time.sleep(0.5)
+ data=ser.readline().decode('ascii')
+ print(data)
