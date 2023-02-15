@@ -108,6 +108,103 @@ if (mcp2515_2.readMessage(&canMsg) == MCP2515::ERROR_OK) {
   }
 }
 }
+//update is sending two hexa values from file or serial moniter
+///hereh is code/// //
+///
+@#@#$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+#include <SPI.h>//includiing spi libreary for can module
+#include <mcp2515_twoModules.h>// including can libreary
+#define MCP2515_CS 53 // defing the can master pin 
+struct can_frame canMsg1; // defing the structure variable name message in a structure 
+
+MCP2515 mcp2515(MCP2515_CS); // Initialize MCP2515 1 on cs 53
+
+
+
+//####### slave for header #################
+
+
+
+MCP2515 mcp2515_2(49); //Initialize MCP2515 2 on digital pin 15 //slave onject
+struct can_frame canMsg; // defining slave message formating
+//struct can_frame canMsg2;
+
+void setup() {
+ 
+  
+  pinMode(13, OUTPUT);
+// Initialize the first SPI interface for MCP2515 1
+
+  while (!Serial);
+  Serial.begin(115200);
+  
+  mcp2515.reset();
+  mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ);
+  mcp2515.setNormalMode();
+  delay(1000);
+  Serial.println("Write to CAN");
+
+///############slave setup here ###
+
+
+
+// Initialize the first SPI interface for MCP2515 2
+
+ Serial.begin(115200);
+  
+  mcp2515_2.reset();
+  mcp2515_2.setBitrate(CAN_500KBPS, MCP_8MHZ);
+  mcp2515_2.setNormalMode();
+  
+  Serial.println("------- CAN Read ----------");
+  canMsg1.can_id = 0x12;
+    canMsg1.can_dlc = 2;
+
+}
+
+void loop() {
+   if (Serial.available() > 0) { // check if there is data available on the Serial port
+    String hexString1 = Serial.readStringUntil(' '); // read the first hex value as a String until a space character is received
+    String hexString2 = Serial.readStringUntil('\n'); // read the second hex value as a String until a newline character is received
+    long hexValue1 = strtol(hexString1.c_str(), NULL, 16); // convert the first hex String to a long integer
+    long hexValue2 = strtol(hexString2.c_str(), NULL, 16); // convert the second hex String to a long integer
+    Serial.print("Hex value 1: ");
+    Serial.println(hexValue1, HEX); // print the first hex value back out over Serial
+    Serial.print("Hex value 2: ");
+    Serial.println(hexValue2, HEX); // print the second hex value back out over Serial
+    canMsg1.data[0]=hexValue1;
+    canMsg1.data[1]=hexValue2;
+     digitalWrite(13, HIGH);
+  // send the message here
+    mcp2515.sendMessage(&canMsg1);
+    delay(4000);
+    Serial.println("Messages sent");
+   //redaing messaga here
+if (mcp2515_2.readMessage(&canMsg) == MCP2515::ERROR_OK) {
+    Serial.print(canMsg.can_id, HEX); // print ID
+    Serial.print("::"); 
+    Serial.print(canMsg.can_dlc, HEX); // print DLC
+    Serial.print("::");
+
+  
+  //##########slave loop start here
+
+
+// Receive message using MCP2515 2
+
+    for (int i = 0; i<canMsg.can_dlc; i++)  {  // print the data using loop 
+      Serial.print(canMsg.data[i],HEX);
+      Serial.print("_ ");
+     //Serial.write("Led on");
+    }
+
+    Serial.println();      
+  }
+}
+}
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@###################################################################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@##############@@@@#####
 //######################script of pyton 
 import serial
 import time
