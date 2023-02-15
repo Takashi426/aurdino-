@@ -1,0 +1,125 @@
+
+//working well i updating more in it
+
+#include <SPI.h>//includiing spi libreary for can module
+#include <mcp2515_twoModules.h>// including can libreary
+#define MCP2515_CS 53 // defing the can master pin 
+struct can_frame canMsg1; // defing the structure variable name message in a structure 
+
+MCP2515 mcp2515(MCP2515_CS); // Initialize MCP2515 1 on cs 53
+
+
+
+//####### slave for header #################
+
+
+
+MCP2515 mcp2515_2(49); //Initialize MCP2515 2 on digital pin 15 //slave onject
+struct can_frame canMsg; // defining slave message formating
+//struct can_frame canMsg2;
+
+void setup() {
+  /*
+  canMsg1.can_id  = 0x551;  //  assining data to structure member 
+  canMsg1.can_dlc = 8;  //  assining data to structure member 
+  canMsg1.data[0] = 0x1C;  //  assining data to structure member 
+  canMsg1.data[1] = 0x02;  //  assining data to structure member 
+  canMsg1.data[2] = 0x58;  //  assining data to structure member 
+  canMsg1.data[3] = 0x02;  //  assining data to structure member 
+  canMsg1.data[4] = 0x1A;  //  assining data to structure member 
+  canMsg1.data[5] = 0x04;  //  assining data to structure member 
+  canMsg1.data[6] = 0x00;  //  assining data to structure member 
+  canMsg1.data[7] = 0x00;  //  assining data to structure member 
+
+  */
+
+  
+  pinMode(13, OUTPUT);
+// Initialize the first SPI interface for MCP2515 1
+
+  while (!Serial);
+  Serial.begin(115200);
+  
+  mcp2515.reset();
+  mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ);
+  mcp2515.setNormalMode();
+  delay(1000);
+  Serial.println("Write to CAN");
+
+///############slave setup here ###
+
+
+
+// Initialize the first SPI interface for MCP2515 2
+
+ Serial.begin(115200);
+  
+  mcp2515_2.reset();
+  mcp2515_2.setBitrate(CAN_500KBPS, MCP_8MHZ);
+  mcp2515_2.setNormalMode();
+  
+  Serial.println("------- CAN Read ----------");
+  canMsg1.can_id = 0x12;
+    canMsg1.can_dlc = 2;
+
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    // Read the input from the user
+    String myString = Serial.readString();
+myString.getBytes(canMsg1.data, 8);
+
+   // canMsg1.data = Serial.readString();
+   /* canMsg1.can_id = 0x12;
+    canMsg1.can_dlc = 2;*/
+    //######just printing to conform####
+    /*
+   Serial.print(canMsg1.can_id,HEX); // print to conform ID
+    Serial.print("::"); 
+    Serial.print(canMsg1.can_dlc,HEX); // printto conform  DLC
+    Serial.print("::");
+    */
+     digitalWrite(13, HIGH);
+  // send the message here
+    mcp2515.sendMessage(&canMsg1);
+    delay(4000);
+    Serial.println("Messages sent");
+   //redaing messaga here
+if (mcp2515_2.readMessage(&canMsg) == MCP2515::ERROR_OK) {
+    Serial.print(canMsg.can_id, HEX); // print ID
+    Serial.print("::"); 
+    Serial.print(canMsg.can_dlc, HEX); // print DLC
+    Serial.print("::");
+
+  
+  //##########slave loop start here
+
+
+// Receive message using MCP2515 2
+
+    for (int i = 0; i<canMsg.can_dlc; i++)  {  // print the data using loop 
+      Serial.print(canMsg.data[i],HEX);
+      Serial.print("_ ");
+     //Serial.write("Led on");
+    }
+
+    Serial.println();      
+  }
+}
+}
+//######################script of pyton 
+import serial
+import time
+ 
+ser= serial.Serial("COM5", 115200)
+ser.timeout = 1
+file = open("arduinodata.txt")
+Read = file.readline()
+while 1:
+    
+ ser.write(Read.encode())
+ print(Read)
+ time.sleep(0.5)
+ data=ser.readline().decode('ascii')
+ print(data)
