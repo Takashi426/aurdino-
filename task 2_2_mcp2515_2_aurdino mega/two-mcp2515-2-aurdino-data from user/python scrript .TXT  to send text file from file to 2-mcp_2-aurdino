@@ -1,0 +1,15 @@
+
+import serial
+import time
+ 
+ser= serial.Serial("COM5", 115200)
+ser.timeout = 1
+file = open("arduinodata.txt")
+Read = file.readline()
+while 1:
+    
+ ser.write(Read.encode())
+ print(Read)
+ time.sleep(0.5)
+ data=ser.readline().decode('ascii')
+ print(data)
