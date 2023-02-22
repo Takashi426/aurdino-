@@ -1,0 +1,45 @@
+import serial
+import time
+import openpyxl
+
+serCom = serial.Serial("COM5", 115200)
+serCom.timeout = 1
+#work book
+#Open the Excel file and select the sheet you want to read from
+workbook = openpyxl.load_workbook('Book3.xlsx')
+sheet = workbook['Sheet1'] # Change 'Sheet1' to the name of your sheet
+#Extract the first row and column values
+
+cell_list = [(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8)]
+row_value = ""
+for row, col in cell_list:
+    cell_value = sheet.cell(row=row, column=col).value
+    if cell_value is not None:
+        row_value += str(cell_value)
+print("for loop value")
+print(row_value)
+
+#row_value = sheet.cell(row1=1, column1=1,row2=1, column2=2,row3=1, column3=3,row4=1, column4=4,row=5, column5=5,row=6, column6=6,row=7, column7=7,row=8, column8=8).value
+#col_value = sheet.cell(row=2, column=2).value
+#Combine the row and column values into a single string
+data_to_send = f"{row_value}\n"
+print(data_to_send)
+#work book 
+#file = open("arduinodata.txt")
+#hexDecs = file.readlines()
+while 1:
+ for hex in data_to_send:
+  
+  #dec = int(hexDec, 16)
+  #print(dec)
+  #hexVal = hex(dec)
+  ascii=bytes.fromhex(data_to_send).decode()
+  #print(ascii[0])
+  #print(ascii[1])
+  time.sleep(0.9)
+  serCom.timeout = 1
+  print(ascii)
+  serCom.write(ascii.encode())
+#while 1:
+  print(serCom.readline().decode())
+  
