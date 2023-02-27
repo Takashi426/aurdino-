@@ -101,7 +101,14 @@ void loop() {
   // put your main code here, to run repeatedly:
    if (Serial.available() > 0) { // check if there is data available on the Serial port
      String myString = Serial.readStringUntil('\n');
-         String  s1 = myString.substring(0, 2);
+             String s1 = myString.substring(0, 1);
+         String s2 = myString.substring(1, 9);
+         int dataLength = s2.length();
+canMsg1.can_dlc=dataLength;
+Serial.println("data length");
+Serial.println(dataLength);
+   canMsg1.can_id = strtoul(s1.c_str(), NULL, 10); 
+
          
         /* for (int i = 0; i < strlen(s2); i++) {
     canMsg1.can_id = (canMsg1.can_id * 10) + (s2[i] - '0'); // Convert ASCII characters to integer values and concatenate them
