@@ -67,3 +67,75 @@ myString.getBytes(canMsg1.data, 9);
 
    }
    }
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+//new update #include <SPI.h>//includiing spi libreary for can module
+#include <mcp2515_twoModules.h>// including can libreary
+#define MCP2515_CS 53 // defing the can master pin 
+struct can_frame canMsg1; // defing the structure variable name message in a structure 
+
+MCP2515 mcp2515(MCP2515_CS); // Initialize MCP2515 1 on cs 53
+
+void setup() {
+  // put your setup code here, to run once:
+  
+  pinMode(13, OUTPUT);
+// Initialize the first SPI interface for MCP2515 1
+
+  while (!Serial);
+  Serial.begin(115200);
+  //Serial3.begin(115200);
+
+   canMsg1.can_id;
+    canMsg1.can_dlc = 8;
+
+  mcp2515.reset();
+  mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ);
+  mcp2515.setNormalMode();
+  delay(1000);
+  Serial.println("Write to CAN");
+
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+   if (Serial.available() > 0) { // check if there is data available on the Serial port
+     String myString = Serial.readStringUntil('\n');
+         String  s1 = myString.substring(0, 2);
+         
+        /* for (int i = 0; i < strlen(s2); i++) {
+    canMsg1.can_id = (canMsg1.can_id * 10) + (s2[i] - '0'); // Convert ASCII characters to integer values and concatenate them
+  }*/
+         //uint32_t can_id = S2.toInt();
+           //Serial.println(s1);
+           sprintf(canMsg1.can_id, "%02X", s1);
+           
+          //canMsg1.can_id=myInt;
+     // s2.readBytes(canMsg1.can_id,1);
+       Serial.println(canMsg1.can_id);
+
+myString.getBytes(canMsg1.data, 9);
+
+
+    //unsigned long hexValue = Serial.parseHexString(hexString1);
+   // String hexString2 = Serial.readStringUntil('\n'); // read the second hex value as a String until a newline character is received
+    //long hexValue = strtol(hexString1.c_str(), NULL, 16); // convert the first hex String to a long integer
+   // long hexValue2 = strtol(hexString2.c_str(), NULL, 16); // convert the second hex String to a long integer
+    //Serial.print("Hex value : ");
+    //Serial.println(hexValue,HEX); // print the first hex value back out over Serial
+    //Serial.print("Hex value 2: ");
+    //Serial.println(hexValue2, HEX); // print the second hex value back out over Serial
+    //canMsg1.data[0]=hexValue;
+    //canMsg1.data[1]=hexValue2;
+     digitalWrite(13, HIGH);
+  // send the message here
+    mcp2515.sendMessage(&canMsg1);
+    delay(4000);
+    Serial.println("Messages sent");
+   //redaing messaga here
+
+
+
+
+   }
+   }
