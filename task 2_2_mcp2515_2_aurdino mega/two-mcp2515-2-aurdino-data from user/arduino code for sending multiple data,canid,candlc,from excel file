@@ -1,0 +1,216 @@
+#include <SPI.h>//includiing spi libreary for can module
+#include <mcp2515_twoModules.h>// including can libreary
+#define MCP2515_CS 53 // defing the can master pin 
+struct can_frame canMsg1; // defing the structure variable name message in a structure 
+struct can_frame canMsg2;
+struct can_frame canMsg3;
+struct can_frame canMsg4;
+struct can_frame canMsg5;
+
+MCP2515 mcp2515(MCP2515_CS); // Initialize MCP2515 1 on cs 53
+
+void setup() {
+  canMsg1.can_id;
+  canMsg1.can_dlc;
+  canMsg2.can_id;
+  canMsg2.can_dlc;
+  canMsg3.can_id;
+  canMsg4.can_dlc;
+  canMsg5.can_dlc;
+
+  while (!Serial);
+  Serial.begin(115200);
+  mcp2515.reset();
+  mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ);
+  mcp2515.setNormalMode();
+  delay(100);
+
+  
+  Serial.println("Write to CAN");
+}
+
+void loop() {
+  
+  char canid1[4];
+  char canid2[4];
+  char canid3[4];
+  char canid4[4];
+  char canid5[4];
+
+  
+   if (Serial.available() > 0) { // check if there is data available on the Serial port
+      String myString = Serial.readString();
+     //for (int i = 0; i <= 1; i++)
+      //{
+      String  s1 = myString.substring(0, 2);
+      s1.getBytes(canid1, 3);
+      canMsg1.can_id =canid1[0];
+
+
+      String  s2 = myString.substring(0, 2);
+      s2.getBytes(canid2, 3);
+      canMsg2.can_id =canid2[0];
+
+
+      String  s3 = myString.substring(0, 2);
+      s3.getBytes(canid3, 3);
+      canMsg3.can_id =canid3[0];
+
+
+      String  s4 = myString.substring(0, 2);
+      s4.getBytes(canid4, 3);
+      canMsg4.can_id =canid4[0];
+
+      String  s5 = myString.substring(0, 2);
+      s5.getBytes(canid5, 3);
+      canMsg5.can_id =canid5[0];
+   
+      //for (int i = 0; i <= 3; i++)
+       //{
+     if(canMsg1.can_id==18)
+         {
+           String l1 = myString.substring(1, 9);
+            l1.getBytes(canMsg1.data, 9);
+            //Serial.println(canid1[0]);
+            int dataLength1 = l1.length();
+            canMsg1.can_dlc=dataLength1;
+    
+    
+           Serial.println("data length_1");
+           Serial.println(canMsg1.can_dlc);
+           Serial.println("can id_1");
+           Serial.println(canMsg1.can_id);
+
+               mcp2515.sendMessage(&canMsg1);
+              // delay(4000);
+               Serial.println("Messages sent_1");
+               delay(150);
+        }
+
+
+      else if(canMsg2.can_id==19)
+         {
+           String l2 = myString.substring(1, 9);
+            l2.getBytes(canMsg2.data, 9);
+           // Serial.println(canid2[0]);
+            int dataLength2 = l2.length();
+            canMsg2.can_dlc=dataLength2;
+             s2.getBytes(canid2, 3);
+
+    
+           Serial.println("data length_2");
+           Serial.println(canMsg2.can_dlc);
+           Serial.println("can id_2");
+           Serial.println(canMsg2.can_id);
+                //delay(400);
+                
+                mcp2515.sendMessage(&canMsg2);
+                Serial.println("Messages sent_2");
+                delay(150);
+        }
+       
+
+
+      else if(canMsg3.can_id==20)
+         {
+           String l3 = myString.substring(1, 9);
+            l3.getBytes(canMsg3.data, 9);
+           // Serial.println(canid3[0]);
+            int dataLength3 = l3.length();
+            canMsg3.can_dlc=dataLength3;
+              s3.getBytes(canid3, 3);
+
+
+    
+           Serial.println("data length_3");
+           Serial.println(canMsg3.can_dlc);
+           Serial.println("can id_3");
+           Serial.println(canMsg3.can_id);
+                mcp2515.sendMessage(&canMsg3);
+                Serial.println("Messages sent_3");
+                delay(100);
+        }
+        else if(canMsg4.can_id==21)
+         {
+           String l4 = myString.substring(1, 9);
+            l4.getBytes(canMsg4.data, 9);
+           // Serial.println(canid3[0]);
+            int dataLength4 = l4.length();
+            canMsg4.can_dlc=dataLength4;
+              s4.getBytes(canid4, 3);
+
+
+    
+           Serial.println("data length_4");
+           Serial.println(canMsg4.can_dlc);
+           Serial.println("can id_4");
+           Serial.println(canMsg4.can_id);
+                mcp2515.sendMessage(&canMsg4);
+                Serial.println("Messages sent_4");
+             delay(100);                
+        }
+          
+
+        else if(canMsg5.can_id==22)
+         {
+           String l5 = myString.substring(1, 9);
+            l5.getBytes(canMsg5.data, 9);
+           // Serial.println(canid3[0]);
+            int dataLength5 = l5.length();
+            canMsg5.can_dlc=dataLength5;
+              s5.getBytes(canid5, 3);
+
+
+    
+           Serial.println("data length_5");
+           Serial.println(canMsg5.can_dlc);
+           Serial.println("can id_5");
+           Serial.println(canMsg5.can_id);
+                mcp2515.sendMessage(&canMsg5);
+                Serial.println("Messages sent_5");
+             delay(100);                
+        }
+
+         else
+           {
+             Serial.println("Invalid input");
+           }
+
+
+       //}
+       
+       
+  
+      
+        
+     
+          
+          
+          /*s1.getBytes(canid1, 3);
+         // canMsg1.can_id =canid1[0];
+          Serial.println(canid1[0]);
+          int dataLength = s2.length();
+          canMsg1.can_dlc=dataLength;
+    
+    
+     Serial.println("data length");
+     Serial.println(canMsg1.can_dlc);
+     Serial.println("can id");
+     Serial.println(canMsg1.can_id);*/
+
+   
+  // send the message here
+  /*
+    mcp2515.sendMessage(&canMsg1);
+   // delay(4000);
+    Serial.println("Messages sent_1");
+    mcp2515.sendMessage(&canMsg2);
+    //delay(400);
+    Serial.println("Messages sent_2");
+    mcp2515.sendMessage(&canMsg3);
+    //delay(400);
+    Serial.println("Messages sent_3");
+     //delay(4000);*/
+       }
+       //azezur
+ }
