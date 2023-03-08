@@ -1,0 +1,45 @@
+
+import serial
+import openpyxl
+
+# Open serial port
+ser = serial.Serial('COM3', 115200)
+
+# Open workbook
+workbook = openpyxl.Workbook()
+sheet = workbook.active
+
+# Initialize row and column numbers
+row_num = 1
+col_num = 1
+
+while True:
+    # Read data from serial port
+    data = ser.readline().decode('utf-8').rstrip().split(',')
+    print(data)
+    # Remove the commas and store the data in a list
+    data_list = []
+    for d in data:
+        if d:
+            data_list.append((d))
+
+    # Write the data to worksheet
+    for d in data_list:
+        sheet.cell(row=row_num, column=col_num, value=d)
+        col_num += 1
+
+        if col_num > 10:
+            # Increment row number and reset column number
+            row_num += 1
+            col_num = 1
+
+            # Save workbook every 10 rows
+            if row_num % 10 == 0:
+                workbook.save('data.xlsx')
+
+    # Save final workbook
+    workbook.save('data.xlsx')
+
+# Close serial port
+ser.close()
+
