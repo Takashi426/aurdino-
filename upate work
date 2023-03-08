@@ -802,7 +802,7 @@ while True:
           # Save final workbook
         workbook.save('data.xlsx')
   ...........................................................wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwweeeeeeeeeeeeeeeeeeeeeeeeeewwwwwwwwwwwwwwwwwwwwwww
-  
+  //python script to receive data from com port into excel
 import serial
 import openpyxl
 
@@ -843,4 +843,44 @@ while True:
 
     # Save final workbook
     workbook.save('data.xlsx')
+  ................................................................................fffffffffffffffffffffffffffffffffffffffffffffffffffff
+  //py script to send data into com port all excel data
   
+import serial
+import openpyxl
+import time
+
+# Open the Excel file and select the sheet
+workbook = openpyxl.load_workbook('Book4.xlsx')
+sheet = workbook['Sheet2']
+
+# Set up the serial connection
+ser = serial.Serial('COM5', 115200) # Replace 'COM1' with the name of your COM port
+
+# Define a function to send data to the serial port
+def send_data(data):
+    try:
+        time.sleep(1)
+        ser.write(data.encode())
+        time.sleep(1)
+        print(ser.readline().decode())
+    except serial.SerialException as e:
+        print('Error sending data:', str(e))
+while 1:
+# Loop through the rows and columns of the sheet
+  for row in sheet.iter_rows(min_row=1, max_col=sheet.max_column, max_row=sheet.max_row):
+    row_value = ""
+    for cell in row:
+        row_value += str(cell.value) + " "
+        data_to_send = f"{row_value}\n"
+    #print("frist line value")
+    #print(data_to_send)
+    # Convert the cell value to a string and send it over the serial connection
+    ascii = bytes.fromhex(data_to_send.strip()).decode('iso-8859-1')
+    #print('Sending data:', ascii)
+    send_data(ascii)
+    time.sleep(0.1)
+
+# Close the serial connection
+ser.close()
+
