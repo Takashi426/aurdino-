@@ -760,6 +760,46 @@ while 1:
   serCom.write(ascii5.encode())
   print(serCom.readline().decode())
   
-  
+  ??????????????????????????????????????????????python script to receive data from com port+++++++++++++++++++______________________________
+  import serial
+import openpyxl
+
+# Open serial port
+ser = serial.Serial('COM3', 115200)
+
+# Open workbook
+workbook = openpyxl.Workbook()
+sheet = workbook.active
+
+# Initialize row and column numbers
+row_num = 1
+col_num = 1
+
+while True:
+    # Read data from serial port
+    data = ser.read(2).decode('utf-8').rstrip()
+    print(data)
+    # Check if data is empty
+    if data:
+        # Write data to worksheet
+        sheet.cell(row=row_num, column=col_num, value=data)
+
+        # Increment column number
+        col_num += 1
+
+        # Save workbook every 10 columns
+        if col_num % 10 == 0:
+            workbook.save('data.xlsx')
+
+        # Increment row number and reset column number
+        if col_num > 10:
+            row_num += 1
+            col_num = 1
+
+          # Close serial port
+           # ser.close()
+
+          # Save final workbook
+        workbook.save('data.xlsx')
   
   
